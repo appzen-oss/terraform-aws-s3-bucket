@@ -42,6 +42,9 @@ resource "aws_s3_bucket" "default" {
   object_lock_enabled = local.object_lock_enabled
 
   tags = module.this.tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "aws_s3_bucket_accelerate_configuration" "default" {
@@ -463,6 +466,9 @@ resource "aws_s3_bucket_policy" "default" {
   bucket     = join("", aws_s3_bucket.default.*.id)
   policy     = join("", data.aws_iam_policy_document.aggregated_policy.*.json)
   depends_on = [aws_s3_bucket_public_access_block.default]
+  lifecycle {
+    ignore_changes = [policy]
+  }
 }
 
 # Refer to the terraform documentation on s3_bucket_public_access_block at
